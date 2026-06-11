@@ -1,0 +1,386 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #111;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Master Container Grid */
+.split-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Large Full Screen Initial State styling override */
+.boss-health-container.initial-cinematic {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.5);
+    width: 80vw;
+    max-width: 800px;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    background: rgba(10, 10, 10, 0.95);
+    border: 1px solid #ff3366;
+}
+
+/* Fades the full-screen health bar into view on cue */
+.boss-health-container.cinematic-visible {
+    opacity: 1;
+    animation: barPulse 0.5s ease-out;
+}
+
+.boss-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+/* Dynamic font adjustments for full screen view */
+.initial-cinematic .boss-meta {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    letter-spacing: 4px;
+}
+
+.boss-name {
+    color: #ff3366;
+    text-shadow: 0 0 8px rgba(255, 51, 102, 0.5);
+}
+
+.boss-hp-text {
+    color: #aaa;
+}
+
+.health-bar-bg {
+    width: 100%;
+    height: 14px;
+    background: #222;
+    border: 1px solid #444;
+    position: relative;
+    overflow: hidden;
+    border-radius: 2px;
+}
+
+.initial-cinematic .health-bar-bg {
+    height: 24px;
+}
+
+.health-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #764ba2 0%, #ff3366 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    transition: width 0.15s ease-out;
+}
+
+.health-bar-hit {
+    height: 100%;
+    background: #ffffff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    transition: width 0.5s ease-out;
+    opacity: 0.6;
+}
+
+/* Left Pane Style (Now holds profile, links, and socials) */
+.left-pane {
+    width: 35%;
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 50px 30px;
+    border-right: 1px solid #2a2a2a;
+}
+
+.profile-sticky {
+    position: sticky;
+    top: 50px;
+    width: 100%;
+    max-width: 320px;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #764ba2;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+/* Profile Shake Class Triggered by JS */
+.shake-animation {
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.profile-header h1 {
+    font-size: 1.6rem;
+    margin-bottom: 5px;
+}
+
+.profile-header .handle {
+    font-size: 0.95rem;
+    color: #888;
+}
+
+/* Left Side Links Menu */
+.links-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.link-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 14px 18px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.link-card:hover {
+    background: rgba(118, 75, 162, 0.15);
+    border-color: #764ba2;
+    transform: translateX(3px);
+}
+
+.link-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+}
+
+.link-content i {
+    color: #764ba2;
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Social Footer */
+.socials {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-icon {
+    color: #aaa;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+    color: #764ba2;
+}
+
+/* Right Pane Style (Scrollable Bio) */
+.right-pane {
+    width: 65%;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 60px 80px;
+    background: linear-gradient(135deg, #121212 0%, #1a1525 100%);
+}
+
+.scroll-content {
+    max-width: 650px;
+}
+
+.bio-section {
+    margin-bottom: 50px;
+}
+
+.bio-section h2 {
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    color: #764ba2;
+}
+
+.bio-section p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #ccc;
+    margin-bottom: 15px;
+}
+
+/* --- PHYSICS COLLAPSE & GRAVITY ENGINE STYLES --- */
+.collapse-item {
+    transition: transform 1s cubic-bezier(0.6, -0.28, 0.735, 0.045), opacity 1s ease-in;
+    transform-origin: center bottom;
+}
+
+/* Physics-based drop animation states */
+.collapse-item.fall-down {
+    transform: translateY(120vh) rotate(35deg);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Alternate rotation angles randomly for list children collapse asymmetry */
+.links-wrapper .link-card.fall-down:nth-child(even) {
+    transform: translateY(120vh) rotate(-45deg);
+}
+
+/* Game Over Defeated Splash Overlay Styling */
+.defeat-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 100000;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.defeat-overlay.show-defeat {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.defeat-text {
+    font-size: 5rem;
+    font-weight: 900;
+    color: #ff3366;
+    letter-spacing: 15px;
+    text-shadow: 0 0 30px rgba(255, 51, 102, 0.8);
+    transform: scale(0.8);
+    transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.defeat-overlay.show-defeat .defeat-text {
+    transform: scale(1);
+}
+
+/* Layout backgrounds tracking during collapse state */
+body.game-over .right-pane {
+    background: #000 !important;
+    transition: background 2s ease-out;
+}
+
+body.awaiting-interaction .split-container {
+    opacity: 0 !important;
+}
+
+body::before {
+    content: "CLICK TO ENTER THE HOLEY GROUND";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #0d0d0d;
+    color: #ff3366;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    opacity: 1;
+    transition: opacity 0.5s ease, pointer-events 0.5s;
+    text-shadow: 0 0 10px rgba(255, 51, 102, 0.4);
+}
+
+body.interaction-unlocked::before {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Cinematic flashing entrance animation */
+@keyframes barPulse {
+    0% { transform: translate(-50%, -50%) scale(1.3); filter: brightness(3); opacity: 0; }
+    50% { filter: brightness(2); }
+    100% { transform: translate(-50%, -50%) scale(1.5); filter: brightness(1); opacity: 1; }
+}
+
+/* Hit Screen Shake Animation Definition */
+@keyframes shake {
+    10%, 90% { transform: translate3d(-2px, 0, 0); }
+    20%, 80% { transform: translate3d(3px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+    40%, 60% { transform: translate3d(5px, 0, 0); }
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .split-container {
+        flex-direction: column;
+    }
+    
+    .left-pane {
+        width: 100%;
+        padding: 40px 20px;
+        border-right: none;
+        border-bottom: 1px solid #2a2a2a;
+    }
+    
+    .profile-sticky {
+        position: relative;
+        top: 0;
+        max-width: 100%;
+    }
+
+    .right-pane {
+        width: 100%;
+        height: auto;
+        overflow-y: visible;
+        padding: 40px 20px;
+    }
+
+    .boss-health-container.initial-cinematic {
+        width: 95vw;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .defeat-text {
+        font-size: 3rem;
+        letter-spacing: 5px;
+    }
+    @keyframes barPulse {
+        0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+}
+

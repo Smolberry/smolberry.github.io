@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saint Fibers | Bio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="intro-active">
+
+    <!-- Hidden HTML5 Audio Element (Completely Invisible) -->
+    <audio id="boss-theme" preload="auto" loop style="display: none; visibility: hidden; position: absolute; width: 0; height: 0;">
+        <source src="bosstheme.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="split-container" id="main-layout">
+        
+        <!-- Left Side: Fixed Profile & Links Margin -->
+        <aside class="left-pane collapse-item">
+            <div class="profile-sticky">
+                <!-- Profile Header -->
+                <div id="boss-health" class="boss-health-container initial-cinematic">
+                    <div class="boss-meta">
+                        <span class="boss-name">YOUR NAME</span>
+                        <span class="boss-hp-text"><span id="hp-current">1000</span> / <span id="hp-max">1000</span> HP</span>
+                    </div>
+                    <div class="health-bar-bg">
+                        <!-- Red underlayer for hit damage animation effect -->
+                        <div id="health-bar-hit" class="health-bar-hit" style="width: 100%;"></div>
+                        <!-- Main green/purple health layer -->
+                        <div id="health-bar-fill" class="health-bar-fill" style="width: 100%;"></div>
+                    </div>
+                </div>
+                <header class="profile-header collapse-item">
+                    <img src="https://cdn.discordapp.com/avatars/481693014864035862/3f7cb21e4ae209211a761a27a601dede.webp?size=1024" alt="Profile Picture" class="profile-img" id="profile-avatar" onclick="modifyHP(-50)">
+                    <h1>Saint Fibers</h1>
+                    <p class="handle">@smolcold</p>
+                </header>
+                
+                <!-- Links moved to Left Margin -->
+                <nav class="links-wrapper collapse-item">
+                    <a href="https://steamcommunity.com/id/810butts/" class="link-card collapse-item" target="_blank">
+                        <div class="link-content">
+                            <i class="fa-solid fa-globe"></i>
+                            <span>My Steam</span>
+                        </div>
+                    </a>
+                    
+                    <a href="https://discordapp.com/users/481693014864035862/" class="link-card collapse-item" target="_blank">
+                        <div class="link-content">
+                            <i class="fa-solid fa-discord"></i>
+                            <span>Discord</span>
+                        </div>
+                    </a>
+                    
+                    <a href="https://anilist.co/user/Smolcold/" class="link-card collapse-item" target="_blank">
+                        <div class="link-content">
+                            <i class="fa-solid fa-anilist"></i>
+                            <span>My Anime List</span>
+                        </div>
+                    </a>
+                </nav>
+                
+                <!-- Social Footer -->
+                <footer class="socials collapse-item">
+                    <a href="https://github.com" class="social-icon" target="_blank"><i class="fa-brands fa-github"></i></a>
+                    <a href="https://twitter.com" class="social-icon" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="https://linkedin.com" class="social-icon" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                </footer>
+            </div>
+        </aside>
+
+        <!-- Right Side: Scrollable Bio Area Only -->
+        <main class="right-pane collapse-item">
+            <div class="scroll-content">
+                
+                <section class="bio-section collapse-item">
+                    <h2>Biography</h2>
+                    <p>I'm a gay shitposter through-and-through, fukc you >:c</p>
+                    <p>I like coffee and chocolate.</p>
+                </section>
+
+                <section class="bio-section collapse-item">
+                    <h2>My Philosophy</h2>
+                    <p>Why even have an identity.</p>
+                    <p>Fuck that noise >:c</p>
+                </section>
+
+                <section class="bio-section collapse-item">
+                    <h2>Current Projects</h2>
+                    <p>Cheese</p>
+                </section>
+                
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Defeated Overlay Notification Banner -->
+    <div id="defeat-screen" class="defeat-overlay">
+        <div class="defeat-text">You Killed a Saint</div>
+    </div>
+
+     <script>
+        let currentHP = 1000;
+        const maxHP = 1000;
+        let audioTrack = document.getElementById('boss-theme');
+        let applicationStarted = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Force audio preload in browser buffer
+            audioTrack.load();
+
+            const triggerStart = () => {
+                if (!applicationStarted) {
+                    applicationStarted = true;
+                    
+                    // Unveils the background grid layout visually
+                    document.body.classList.add('interaction-unlocked');
+                    
+                    // Starts the synced bar display and theme music instantly
+                    runCinematicEntrance();
+                }
+                // Scrub tracking events
+                window.removeEventListener('click', triggerStart);
+                window.removeEventListener('scroll', triggerStart);
+                window.removeEventListener('touchstart', triggerStart);
+            };
+
+            window.addEventListener('click', triggerStart);
+            window.addEventListener('scroll', triggerStart);
+            window.addEventListener('touchstart', triggerStart);
+        });
+
+        function runCinematicEntrance() {
+            const bar = document.getElementById('boss-health');
+
+            // 1. Fire the visual boss health bar card on screen immediately
+            bar.classList.add('cinematic-visible');
+            
+            // 2. Fire the theme track audio synced at the exact same millisecond
+            audioTrack.currentTime = 9; 
+            audioTrack.play().catch(error => {
+                console.log("Audio pipeline bypass failure:", error);
+            });
+            
+            // 3. Keep it giant for 2.5 seconds, then move it down to the profile slot
+            setTimeout(() => {
+                bar.classList.remove('initial-cinematic', 'cinematic-visible');
+                document.body.classList.remove('intro-active');
+            }, 2500);
+        }
+
+        function updateUI(isDamage = false) {
+            if(currentHP > maxHP) currentHP = maxHP;
+            if(currentHP < 0) currentHP = 0;
+
+            const percentage = (currentHP / maxHP) * 100;
+            document.getElementById('hp-current').innerText = currentHP;
+            document.getElementById('health-bar-fill').style.width = percentage + "%";
+            
+            setTimeout(() => {
+                document.getElementById('health-bar-hit').style.width = percentage + "%";
+            }, 400);
+
+            const avatar = document.getElementById('profile-avatar');
+
+            if (isDamage && currentHP > 0) {
+                avatar.classList.remove('shake-animation');
+                void avatar.offsetWidth; 
+                avatar.classList.add('shake-animation');
+            }
+
+            if(currentHP === 0) {
+                avatar.classList.remove('shake-animation');
+                avatar.style.filter = "grayscale(100%) opacity(40%)";
+                avatar.style.borderColor = "#444";
+                triggerGravityCollapse();
+            } else {
+                document.body.classList.remove('game-over');
+                document.getElementById('defeat-screen').classList.remove('show-defeat');
+                
+                const collapsedItems = document.querySelectorAll('.collapse-item');
+                collapsedItems.forEach(item => item.classList.remove('fall-down'));
+                
+                avatar.style.filter = "none";
+                avatar.style.borderColor = "#764ba2";
+            }
+        }
+
+        function fadeAudioOut() {
+            let fadeInterval = setInterval(() => {
+                if (audioTrack.volume > 0.1) {
+                    audioTrack.volume -= 0.1;
+                } else {
+                    clearInterval(fadeInterval);
+                    audioTrack.pause();
+                    audioTrack.volume = 1.0; 
+                }
+            }, 150);
+        }
+
+        function triggerGravityCollapse() {
+            document.body.classList.add('game-over');
+            const avatar = document.getElementById('profile-avatar');
+            avatar.style.filter = "grayscale(100%) opacity(40%)";
+            avatar.style.borderColor = "#444";
+            fadeAudioOut();
+
+            const collapsedItems = document.querySelectorAll('.collapse-item');
+            collapsedItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('fall-down');
+                }, index * 80); 
+            });
+
+            setTimeout(() => {
+                document.getElementById('defeat-screen').classList.add('show-defeat');
+            }, 1200);
+        }
+
+        function modifyHP(amount) {
+            currentHP += amount;
+            const isDamage = amount < 0;
+            updateUI(isDamage);
+        }
+
+        function setHP(targetValue) {
+            const isDamage = targetValue < currentHP;
+            currentHP = targetValue;
+            updateUI(isDamage);
+        }
+    </script>
